@@ -37,12 +37,30 @@ def callback():
     return 'OK'
 
 
+@app.route("/push", methods=['GET'])
+def pushmessage():
+    for uid in users:
+        line_bot_api.push_message(uid, TextSendMessage(text='Hello World'))
+    return "push user# " + str(len(users)) + " OK"
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     print("event.reply_token:", event.reply_token)
     print("event.message.text:", event.message.text)
-    message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(event.reply_token, message)
+    text = event.message.text
+    if text == 'profile':
+        if isinstance(event.source, SourceUser):
+            global users
+            users.append(event.source.user_id)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=event.source.user_id)
+            )
+    else:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=event.message.text))
 
 
 @handler.add(MessageEvent, message=StickerMessage)
