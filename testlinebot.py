@@ -54,7 +54,6 @@ def handle_message(event):
     text = event.message.text
     if text == 'profile':
         if isinstance(event.source, SourceUser):
-            global users
             users.append(event.source.sender_id)
             line_bot_api.reply_message(
                 event.reply_token,
