@@ -39,6 +39,13 @@ def callback():
     return 'OK'
 
 
+@app.route("/push", methods=['GET'])
+def pushmessage():
+    for uid in users:
+        line_bot_api.push_message(uid, TextSendMessage(text='Hello World'))
+    return "push user# " + str(len(users)) + " OK"
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     print("event.reply_token:", event.reply_token)
@@ -56,13 +63,6 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=event.message.text))
-
-
-@app.route("/push", methods=['GET'])
-def pushmessage():
-    for uid in users:
-        line_bot_api.push_message(uid, TextSendMessage(text='Hello World'))
-    return "push user# " + str(len(users)) + " OK"
 
 
 @handler.add(MessageEvent, message=StickerMessage)
