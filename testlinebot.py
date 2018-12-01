@@ -15,6 +15,7 @@ from linebot.models import (
 app = Flask(__name__)
 config = configparser.ConfigParser()
 config.read("config.ini")
+users = []
 
 # config
 line_bot_api = LineBotApi(config['line_bot']['Channel_Access_Token'])
@@ -32,10 +33,10 @@ def callback():
     app.logger.info("Request body: " + body)
 
     # handle webhook body
-    try:
-        handler.handle(body, signature)
-    except:
-        print("something wrong")
+    #try:
+    handler.handle(body, signature)
+    #except:
+       # print("something wrong")
     return 'OK'
 
 
@@ -54,7 +55,7 @@ def handle_message(event):
     if text == 'profile':
         if isinstance(event.source, SourceUser):
             global users
-            users.append(event.source.user_id)
+            users.append(event.source.sender_id)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=event.source.user_id)
